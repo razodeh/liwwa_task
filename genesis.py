@@ -2,7 +2,7 @@
 I use this module to put utilities
 to initialize Flask App.
 """
-from flask import Flask
+
 from flask_api import FlaskAPI
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -22,8 +22,8 @@ def set_jwt_loaders(jwt_manager):
     @jwt_manager.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
-        # TODO implement
-        # return User.query.filter_by(id=identity).one_or_none()
+        from models import User
+        return User.query.filter_by(id=identity).one_or_none()
 
 
 def create_app(**kwargs):

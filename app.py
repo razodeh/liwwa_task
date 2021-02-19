@@ -2,6 +2,7 @@ from flask import jsonify
 
 from controllers.auth import Auth
 from controllers.candidates import Candidates
+from controllers.resume import Resume
 from exceptions import TinyHRError
 from genesis import create_app
 
@@ -12,6 +13,7 @@ app.url_map.strict_slashes = False
 # Registering Controllers (Blueprints)
 app.register_blueprint(Auth)
 app.register_blueprint(Candidates)
+app.register_blueprint(Resume)
 
 
 # Error Handlers

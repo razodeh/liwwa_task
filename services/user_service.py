@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from exceptions import TinyHRError
 from services.base import CRUDServiceBase
 from models import User, DB, CandidateProfile
+from uploaders import FileSystemStorage
 
 
 class UserService(CRUDServiceBase):
@@ -57,3 +58,16 @@ class UserService(CRUDServiceBase):
             return user
         # Throw and Error on failure.
         raise TinyHRError("Invalid Credentials", 401)
+
+    def upload_resume(self, user, resume_file):
+        user_profile = user.profile
+        file_path = FileSystemStorage().upload_file(resume_file)
+        user_profile.resume_url = file_path
+        DB.session.add(user_profile)
+        DB.session.commit()
+
+    def get_user_resume(self, pk):
+        user = self.retrieve(pk)
+        resume_path = user.profile.resume_url
+        resume_file = FileSystemStorage().retrieve_file(resume_path)
+        return resume_file

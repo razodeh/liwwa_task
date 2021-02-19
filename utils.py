@@ -74,3 +74,27 @@ def admin_required(fn):
         return fn(*args, **kwargs)
 
     return decorated_function
+
+
+def file_types_required(allowed_types=None):
+    """
+    Decorator for endpoints with file upload, to safe-guard
+    these endpoints from uploading files with unwanted file
+    types.
+    :param allowed_types: a list of allowed mimetypes, if nothing was passed,
+    it means no restrictions
+    :return:
+    """
+
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            if request.files and allowed_types:
+                for filename, file_obj in request.files.items():
+                    if file_obj.mimetype not in allowed_types:
+                        raise TinyHRError("Uploaded file type is not allowed.", 422)
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorator

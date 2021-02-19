@@ -2,7 +2,7 @@
 I use this module to put utilities
 to initialize Flask App.
 """
-
+from flask import Flask
 from flask_api import FlaskAPI
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager

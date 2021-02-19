@@ -30,7 +30,7 @@ class UserService(CRUDServiceBase):
         ).paginate(
             page, per_page, error_out=False
         ).items
-        return [self.serialize(user) for user in users_list]
+        return [self.serialize_listing(user) for user in users_list]
 
     def retrieve(self, pk, **kwargs):
         return User.query.filter_by(id=pk).first_or_404()
@@ -41,12 +41,9 @@ class UserService(CRUDServiceBase):
     def update(self, pk, **kwargs):
         pass
 
-    def serialize(self, instance):
+    def serialize_listing(self, instance):
         serialized = {
-            "email": instance.email,
-            "first_name": instance.first_name,
-            "last_name": instance.last_name,
-            "date_joined": instance.date_joined,
+            "full_name": f"{instance.first_name} {instance.last_name}",
             "years_of_experience": instance.profile and instance.profile.years_of_experience,
             "department": instance.profile and instance.profile.department.name.upper(),
             "date_of_birth": instance.profile and instance.profile.date_of_birth,

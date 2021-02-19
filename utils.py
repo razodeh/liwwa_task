@@ -2,6 +2,7 @@ import hashlib
 from functools import wraps
 
 from flask import request
+from flask_jwt_extended import current_user
 from schematics.datastructures import FrozenDict
 from schematics.exceptions import DataError
 from werkzeug.security import gen_salt as salt_generator
@@ -63,3 +64,13 @@ def required_params(params):
         return wrapper
 
     return decorator
+
+
+def admin_required(fn):
+    @wraps(fn)
+    def decorated_function(*args, **kwargs):
+        if not (current_user and current_user.is_admin):
+            raise TinyHRError("You are not allowed to perform this action", 403)
+        return fn(*args, **kwargs)
+
+    return decorated_function

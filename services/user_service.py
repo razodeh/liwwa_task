@@ -7,16 +7,17 @@ from uploaders import FileSystemStorage
 
 
 class UserService(CRUDServiceBase):
-    def create(self, user_details, profile_details, **kwargs):
+    def create(self, user_details, profile_details=None, **kwargs):
         try:
             # Put User Details
-            user = User(**user_details)
+            user = User(**user_details, **kwargs)
             DB.session.add(user)
             DB.session.commit()
             # Hash User's Password
             user.hashify_password(user.password)
-            profile = CandidateProfile(**profile_details, user_id=user.id)
-            DB.session.add(profile)
+            if profile_details:
+                profile = CandidateProfile(**profile_details, user_id=user.id)
+                DB.session.add(profile)
             DB.session.add(user)
             DB.session.commit()
         except IntegrityError:
@@ -26,7 +27,7 @@ class UserService(CRUDServiceBase):
         return user
 
     def list(self, page=1, per_page=10, **kwargs):
-        users_list = User.query.order_by(
+        users_list = User.query.filter_by(is_admin=False).order_by(
             User.date_joined.desc()
         ).paginate(
             page, per_page, error_out=False

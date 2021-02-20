@@ -1,10 +1,12 @@
 from flask import jsonify
 
+from commands import create_admin
 from controllers.auth import Auth
 from controllers.candidates import Candidates
 from controllers.resume import Resume
 from exceptions import TinyHRError
 from genesis import create_app
+
 
 # Initiate Flask App
 app = create_app()
@@ -31,6 +33,9 @@ def does_not_exist_handler(_error):
     })
     return response, 404
 
+
+# Add related commands to flask app.
+app.cli.add_command(create_admin)
 
 if __name__ == '__main__':
     app.run()

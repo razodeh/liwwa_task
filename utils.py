@@ -1,4 +1,5 @@
 import hashlib
+import re
 from functools import wraps
 
 from flask import request
@@ -98,3 +99,13 @@ def file_types_required(allowed_types=None):
         return wrapper
 
     return decorator
+
+
+def is_valid_email(email):
+    EMAIL_REGEX = r"^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
+    return not not re.search(EMAIL_REGEX, email)
+
+
+def is_valid_password(password):
+    PASS_REGEX = r"^.{8,}$"
+    return not not re.search(PASS_REGEX, password)
